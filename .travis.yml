@@ -1,0 +1,106 @@
+language: python
+dist: xenial
+sudo: false
+
+services:
+  - xvfb
+
+addons:
+    apt:
+      packages:
+        - herbstluftwm
+        - libxkbcommon-x11-0
+
+env: 
+   global:
+      - OFFICIAL_REPO="klauer/qtpyinheritance"
+      # Doctr deploy key for klauer/qtpyinheritance
+      - secure: ""
+
+matrix:
+  fast_finish: true
+  include:
+    - python: 3.6
+      env:
+        - CONDA_UPLOAD=1
+        - BUILD_DOCS=1
+        - QT_API=pyqt5
+    - python: 3.7
+      env:
+        - QT_API=pyqt5
+    - python: 3.6
+      env:
+        - QT_API=PySide2
+    - python: 3.7
+      env:
+        - QT_API=PySide2
+
+install:
+  # Install requirements
+  - pip install -Ur requirements.txt
+  # Install additional development requirements
+  - pip install -Ur dev-requirements.txt
+  # Install the package
+  - pip install -e .
+  # Install the specific binding we're testing against
+  - pip install "${QT_API}"
+
+
+before_script:
+  # Run the window manager
+  - "herbstluftwm &"
+  - sleep 1
+
+
+script:
+  - flake8 qtpyinheritance
+  - export PYTEST_QT_API="${QT_API}"
+  - coverage run run_tests.py
+  - set -e
+  
+  - |
+    if [[ "$BUILD_DOCS" == "1" ]]; then
+      # Create HTML documentation  
+      pushd docs
+      make html
+      popd
+      #Publish docs.
+      doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --command "touch .nojekyll; git add .nojekyll"
+    fi
+   
+
+after_success:
+  - coverage report -m
+  - codecov
+
+  - |
+    if [[ "$CONDA_UPLOAD" == "1" ]]; then
+        # Install and configure miniconda
+        wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+        bash miniconda.sh -b -p $HOME/miniconda
+        export PATH="$HOME/miniconda/bin:$PATH"
+        hash -r
+        conda config --set always_yes yes --set changeps1 no
+
+        # Ensure all packages are up-to-date
+        conda update -q conda
+        conda install conda-build anaconda-client
+        conda config --append channels conda-forge
+        conda info -a
+
+        # Build the conda recipe for this package
+        conda build -q conda-recipe --python=$TRAVIS_PYTHON_VERSION --output-folder bld-dir
+        conda config --add channels "file://`pwd`/bld-dir"
+
+        # Create the test environment
+        conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION qtpyinheritance --file requirements.txt
+        source deactivate
+        source activate test-environment
+
+      if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO ]]; then
+        if [[ $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' ]]; then
+          export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
+          anaconda upload bld-dir/linux-64/*.tar.bz2
+        fi
+      fi
+    fi
