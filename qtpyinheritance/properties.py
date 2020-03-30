@@ -1,7 +1,6 @@
 import logging
 
 from qtpy import QtCore
-from qtpy import QtWidgets
 
 
 logger = logging.getLogger(__name__)
@@ -175,7 +174,7 @@ def forward_property(
         rw_class=PassthroughProperty, ro_class=ReadonlyPassthroughProperty
         ):
     '''
-    Forward a single property from a QObject attribute in a class given its name
+    Forward one property from a QObject attribute in a class given its name
 
     For use in class definitions. As the usage is somewhat nonstandard, be sure
     to look at the example below.
