@@ -71,7 +71,6 @@ script:
 
 after_success:
   - coverage report -m
-  - codecov
 
   - |
     if [[ "$CONDA_UPLOAD" == "1" ]]; then
