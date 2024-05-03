@@ -14,6 +14,7 @@
 #
 import os
 import sys
+
 import sphinx_rtd_theme
 
 module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -26,6 +27,7 @@ project = 'qtpyinheritance'
 author = 'Ken Lauer'
 
 from datetime import datetime
+
 year = datetime.now().year
 copyright = str(year) + ', Ken Lauer'
 

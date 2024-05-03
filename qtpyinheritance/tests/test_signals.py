@@ -5,7 +5,6 @@ from qtpy import QtCore
 
 import qtpyinheritance.signals
 
-
 print(qtpy.QT_VERSION, qtpy.API_NAME)
 
 

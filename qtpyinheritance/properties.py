@@ -2,7 +2,6 @@ import logging
 
 from qtpy import QtCore
 
-
 logger = logging.getLogger(__name__)
 
 SKIP_TYPENAMES = {'Shadow', 'Shape'}
@@ -169,10 +168,10 @@ def forward_properties(locals_dict, attr_name, cls, superclasses, *,
 
 
 def forward_property(
-        attr_name, cls, prop_name, *,
-        designable=None, scriptable=None, stored=None, user=None,
-        rw_class=PassthroughProperty, ro_class=ReadonlyPassthroughProperty
-        ):
+    attr_name, cls, prop_name, *,
+    designable=None, scriptable=None, stored=None, user=None,
+    rw_class=PassthroughProperty, ro_class=ReadonlyPassthroughProperty
+):
     '''
     Forward one property from a QObject attribute in a class given its name
 

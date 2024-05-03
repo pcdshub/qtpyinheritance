@@ -25,7 +25,7 @@ requirements:
 
 test:
   imports:
-  - qtpyinheritance 
+  - qtpyinheritance
   requires:
   - pyqt=5
   - pytest >=6.2.0
