@@ -1,6 +1,6 @@
 {% set package_name = "qtpyinheritance" %}
 {% set import_name = "qtpyinheritance" %}
-{% set version = load_file_regex(load_file=os.path.join(import_name, "_version.py"), regex_pattern=".*version = '(\S+)'").group(2) %}
+{% set version = load_file_regex(load_file=os.path.join(import_name, "_version.py"), regex_pattern=".*version = '(\S+)'").group(1) %}
 
 package:
   name: {{ package_name }}
