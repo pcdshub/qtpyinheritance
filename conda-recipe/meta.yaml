@@ -1,0 +1,38 @@
+{% set package_name = "qtpyinheritance" %}
+{% set import_name = "qtpyinheritance" %}
+{% set version = load_file_regex(load_file=os.path.join(import_name, "_version.py"), regex_pattern=".*version = '(\S+)'").group(1) %}
+
+package:
+  name: {{ package_name }}
+  version: {{ version }}
+
+source:
+  path: ..
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  build:
+  - python >=3.9
+  - setuptools_scm
+  - pip
+  run:
+  - python >=3.9
+  - qtpy
+
+test:
+  imports:
+  - qtpyinheritance
+  requires:
+  - pyqt=5
+  - pytest >=6.2.0
+  - pytest-qt
+  - qtpy
+
+about:
+  home: https://github.com/pcdshub/qtpyiheritance
+  license: SLAC Open License
+  summary: PCDS Python Utilities

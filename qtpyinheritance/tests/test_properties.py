@@ -1,7 +1,7 @@
 from qtpy import QtWidgets
 
 import qtpyinheritance.properties
-from qtpyinheritance.properties import forward_property, forward_properties
+from qtpyinheritance.properties import forward_properties, forward_property
 
 
 def test_forward_properties(qtbot):
